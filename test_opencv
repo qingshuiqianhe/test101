@@ -1,0 +1,109 @@
+# -*- coding: utf-8 -*-
+
+import cv2
+import sys
+import numpy as np
+from PIL import Image
+
+
+# img = cv2.imread("1.jpg")
+# emptyImage = np.zeros(img.shape, np.uint8)
+#
+# emptyImage2 = img.copy()
+#
+# emptyImage3 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#
+# cv2.imshow("EmptyImage3", emptyImage3)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
+
+# def CatchUsbVideo(window_name, camera_idx):
+#     cv2.namedWindow(window_name)
+#     # 视频来源，可以来自一段已存好的视频，也可以直接来自USB摄像头
+#     cap = cv2.VideoCapture(camera_idx)
+#
+#     # 告诉OpenCV使用人脸识别分类器
+#     classfier = cv2.CascadeClassifier("C:/Python27/Lib/site-packages/cv2/data/haarcascade_frontalface_alt2.xml")
+#     # 识别出人脸后要画的边框的颜色，RGB格式
+#     color = (0, 255, 0)
+#     count = 0
+#     while cap.isOpened():
+#         ok, frame = cap.read()  # 读取一帧数据
+#         if not ok:
+#             break
+#             # 将当前帧转换成灰度图像
+#         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#         # 人脸检测，1.2和2分别为图片缩放比例和需要检测的有效点数
+#         faceRects = classfier.detectMultiScale(grey, scaleFactor=1.2, minNeighbors=3, minSize=(32, 32))
+#         if len(faceRects) > 0:  # 大于0则检测到人脸
+#            count = count + 1
+#     return count
+#
+#
+# if __name__ == '__main__':
+#     result = CatchUsbVideo(u"识别人脸区域", 'J.Fla - Hey Jude.mp4')
+#     if result > 0:
+#         print(u'视频中有人！！')
+#     else:
+#         print(u'视频中无人！！')
+
+
+# 标记出人脸
+# filename = 'timg.jpg'
+# face_cascade = cv2.CascadeClassifier('C:/Python27/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml')
+# img = cv2.imread(filename)
+# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#
+# faces = face_cascade.detectMultiScale(gray, 1.3, 2)
+# for (x, y, h, w) in faces:
+#     img = cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
+# cv2.namedWindow('faces Detected!')
+# cv2.imshow('faces Detected!', img)
+# cv2.imwrite('faces.jpg', img)
+# cv2.waitKey(0)
+
+
+def CatchUsbVideo(window_name, camera_idx):
+    cv2.namedWindow(window_name)
+    # 视频来源，可以来自一段已存好的视频，也可以直接来自USB摄像头
+    # cap = CatchUsbVideo(u"识别人脸区域", 'J.Fla - Hey Jude.mp4')
+    cap = cv2.VideoCapture(camera_idx)
+
+    # 告诉OpenCV使用人脸识别分类器
+    classfier = cv2.CascadeClassifier("C:/Python27/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml")
+
+    # 识别出人脸后要画的边框的颜色，RGB格式
+    color = (0, 255, 0)
+    while cap.isOpened():
+        ok, frame = cap.read() #读取一帧数据
+        if not ok:
+            break
+        # 将当前帧转换成灰度图像
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # 人脸检测，1.2和2分别为图片缩放比例和需要检测的有效点数
+        faceRects = classfier.detectMultiScale(grey, scaleFactor=1.2, minNeighbors=4, minSize=(2, 2))
+        if len(faceRects) > 0:            #  大于0则检测到人脸
+            for faceRect in faceRects:  #  单独框出每一张人脸
+                x, y, w, h = faceRect
+                cv2.rectangle(frame, (x - 10, y - 10), (x + w + 10, y + h + 10), color, 2)
+
+        #显示图像
+        cv2.imshow(window_name, frame)
+        c = cv2.waitKey(10)
+        if c & 0xFF == ord('q'):
+            break
+
+    #释放摄像头并销毁所有窗口
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    result = CatchUsbVideo("识别人脸区域", 'J.Fla - Hey Jude.mp4')
+    print(result)
+
+    if len(sys.argv) != 2:
+        print("Usage:%s camera_id\r\n" % (sys.argv[0]))
+    else:
+        CatchUsbVideo("识别人脸区域", int(sys.argv[1]))
