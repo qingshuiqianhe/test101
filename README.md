@@ -4,7 +4,7 @@
 人脸检测</br>
   python +opencv， 从视频的每帧中找到人物，对于识别参数选挑上尽量依据单独参访时所占像素点进行筛选，对于大部分的出场的场景，大概会去到四个人把：</br>
 人脸识别：</br>
-  有一个库<a herf='http://vis-www.cs.umass.edu/lfw/'>Labeled Faces in the Wild </a>
+  有一个库[Labeled Faces in the Wild] ('http://vis-www.cs.umass.edu/lfw/)
 
 时间统计（文件操作）</br>
 step1: opencv</br>
